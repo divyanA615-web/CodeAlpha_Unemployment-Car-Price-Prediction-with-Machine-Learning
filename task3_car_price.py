@@ -3,7 +3,7 @@
 # ============================================================
 import pandas as pd # type: ignore
 import numpy as np # type: ignore
-import matplotlib
+import matplotlib # type: ignore
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt # type: ignore
 import seaborn as sns # type: ignore
@@ -17,7 +17,7 @@ from sklearn.ensemble import RandomForestRegressor # type: ignore
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error # type: ignore
 
 # ── 1. LOAD ──────────────────────────────────────────────────
-df = pd.read_csv("D:\data science related\CodeAlpha_Internship\CodeAlpha_Unemployment-Car-Price-Prediction-with-Machine-Learning\car_data.csv") # type: ignore
+df = pd.read_csv(r"D:\data science related\CodeAlpha_Internship\CodeAlpha_Car-Price-Prediction-with-Machine-Learning\car_data.csv") # type: ignore
 print(f"Shape: {df.shape}")
 print(df.head())
 print(f"\nMissing:\n{df.isnull().sum()}")
@@ -41,9 +41,9 @@ sns.heatmap(corr, annot=True, fmt='.2f', cmap='RdYlGn', # type: ignore
             annot_kws={'size': 10, 'weight': 'bold'})
 ax.set_title('🚗 Car Price — Feature Correlation Heatmap', # type: ignore
              fontsize=13, fontweight='bold')
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_correlation_heatmap.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_correlation_heatmap.png")
 
 # ── 5. CHART 2 — Selling Price Distribution ──────────────────
@@ -60,9 +60,9 @@ axes[1].hist(np.log1p(df['Selling_Price']), bins=30, color='#DD8452',
 axes[1].set_title('Log Scale')
 axes[1].set_xlabel('log(Selling Price)')
 axes[1].grid(alpha=0.3)
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_price_distribution.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_price_distribution.png")
 
 
@@ -72,21 +72,21 @@ df_vis = df.copy()
 fig, axes = plt.subplots(1, 2, figsize=(12, 5)) # type: ignore
 fig.suptitle('🚗 Price Analysis by Category', fontsize=14, fontweight='bold') # type: ignore
 # Price by owner count
-sns.boxplot(data=df_vis, x='Owner', y='Selling_Price',
+sns.boxplot(data=df_vis, x='Owner', y='Selling_Price', # type: ignore
             ax=axes[0], palette='Set2')
 axes[0].set_title('Price by Number of Owners')
 axes[0].set_xlabel('Owners')
 axes[0].set_ylabel('Selling Price (Lakhs)')
 axes[0].grid(alpha=0.3)
 # Price by transmission
-sns.boxplot(data=df_vis, x='Transmission', y='Selling_Price',
+sns.boxplot(data=df_vis, x='Transmission', y='Selling_Price', # type: ignore
             ax=axes[1], palette='Set3')
 axes[1].set_title('Price by Transmission Type (0=Auto, 1=Manual)')
 axes[1].set_xlabel('Transmission')
 axes[1].grid(alpha=0.3)
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_price_by_category.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_price_by_category.png")
 
 # ── 7. TRAIN / TEST SPLIT ────────────────────────────────────
@@ -136,9 +136,9 @@ r2 = results['Random Forest']['R2'] # type: ignore
 ax.text(0.05, 0.92, f'R² = {r2}', transform=ax.transAxes, # type: ignore
         fontsize=12, fontweight='bold',
         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_actual_vs_predicted.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_actual_vs_predicted.png")
 
 # ── 10. CHART 5 — Feature Importance ─────────────────────────
@@ -156,9 +156,9 @@ ax.axvline(importances.mean(), color='black', linestyle='--', # type: ignore
            linewidth=1.2, label='Mean importance')
 ax.legend() # type: ignore
 ax.grid(axis='x', alpha=0.3) # type: ignore
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_feature_importance.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_feature_importance.png")
 
 # ── 11. CHART 6 — Residuals Plot ─────────────────────────────
@@ -178,9 +178,9 @@ axes[1].axvline(0, color='red', linestyle='--', linewidth=1.5)
 axes[1].set_title('Residuals Distribution')
 axes[1].set_xlabel('Residual Value')
 axes[1].grid(alpha=0.3)
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_residuals.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_residuals.png")
 
 # ── 12. MODEL COMPARISON BAR CHART ───────────────────────────
@@ -206,8 +206,8 @@ for bar, v in zip(bars2, mavals): # type: ignore
     axes[1].text(bar.get_x() + bar.get_width()/2,
                  bar.get_height() + 0.01, f'{v:.3f}',
                  ha='center', fontweight='bold')
-plt.tight_layout()
+plt.tight_layout() # type: ignore
 plt.savefig('car_model_comparison.png', dpi=150, bbox_inches='tight') # type: ignore
-plt.close()
+plt.close() # type: ignore
 print("✅ Saved: car_model_comparison.png")
 print("\n✅ TASK 3 COMPLETE — 7 charts + 2 ML models done!")
