@@ -64,3 +64,59 @@ plt.tight_layout()
 plt.savefig('car_price_distribution.png', dpi=150, bbox_inches='tight') # type: ignore
 plt.close()
 print("✅ Saved: car_price_distribution.png")
+
+
+# ── 6. CHART 3 — Price by Fuel Type ─────────────────────────
+# Decode for visualization
+df_vis = df.copy()
+fig, axes = plt.subplots(1, 2, figsize=(12, 5)) # type: ignore
+fig.suptitle('🚗 Price Analysis by Category', fontsize=14, fontweight='bold') # type: ignore
+# Price by owner count
+sns.boxplot(data=df_vis, x='Owner', y='Selling_Price',
+            ax=axes[0], palette='Set2')
+axes[0].set_title('Price by Number of Owners')
+axes[0].set_xlabel('Owners')
+axes[0].set_ylabel('Selling Price (Lakhs)')
+axes[0].grid(alpha=0.3)
+# Price by transmission
+sns.boxplot(data=df_vis, x='Transmission', y='Selling_Price',
+            ax=axes[1], palette='Set3')
+axes[1].set_title('Price by Transmission Type (0=Auto, 1=Manual)')
+axes[1].set_xlabel('Transmission')
+axes[1].grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig('car_price_by_category.png', dpi=150, bbox_inches='tight') # type: ignore
+plt.close()
+print("✅ Saved: car_price_by_category.png")
+
+# ── 7. TRAIN / TEST SPLIT ────────────────────────────────────
+X = df.drop('Selling_Price', axis=1)
+y = df['Selling_Price']
+X_train, X_test, y_train, y_test = train_test_split( # type: ignore
+    X, y, test_size=0.2, random_state=42)
+
+# ── 8. TRAIN MODELS ──────────────────────────────────────────
+models = { # type: ignore
+    'Linear Regression': LinearRegression(),
+    'Random Forest':     RandomForestRegressor(n_estimators=100, random_state=42),
+}
+results = {}
+for name, model in models.items(): # type: ignore
+    model.fit(X_train, y_train) # type: ignore
+    pred = model.predict(X_test) # type: ignore
+    results[name] = {
+        'model': model, 'pred': pred,
+        'R2':   round(r2_score(y_test, pred), 4), # type: ignore
+        'MAE':  round(mean_absolute_error(y_test, pred), 4), # type: ignore
+        'RMSE': round(np.sqrt(mean_squared_error(y_test, pred)), 4), # type: ignore
+    }
+    print(f"\n{'='*40}")
+    print(f"  Model: {name}")
+    print(f"  R²   : {results[name]['R2']}")
+    print(f"  MAE  : {results[name]['MAE']}")
+    print(f"  RMSE : {results[name]['RMSE']}")
+
+# Best model = Random Forest
+best_pred = results['Random Forest']['pred'] # type: ignore
+best_model = results['Random Forest']['model'] # type: ignore
+
