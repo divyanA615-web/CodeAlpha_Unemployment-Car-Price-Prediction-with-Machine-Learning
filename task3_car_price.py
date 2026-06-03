@@ -120,3 +120,43 @@ for name, model in models.items(): # type: ignore
 best_pred = results['Random Forest']['pred'] # type: ignore
 best_model = results['Random Forest']['model'] # type: ignore
 
+# ── 9. CHART 4 — Actual vs Predicted ─────────────────────────
+fig, ax = plt.subplots(figsize=(8, 6)) # type: ignore
+ax.scatter(y_test, best_pred, alpha=0.7, color='#4C72B0', # type: ignore
+           edgecolors='white', linewidth=0.5, s=60)
+mn, mx = min(y_test.min(), best_pred.min()), max(y_test.max(), best_pred.max()) # type: ignore
+ax.plot([mn, mx], [mn, mx], 'r--', linewidth=2, label='Perfect Prediction') # type: ignore
+ax.set_title('🚗 Actual vs Predicted — Random Forest', # type: ignore
+             fontsize=13, fontweight='bold')
+ax.set_xlabel('Actual Selling Price (Lakhs)') # type: ignore
+ax.set_ylabel('Predicted Selling Price (Lakhs)') # type: ignore
+ax.legend() # type: ignore
+ax.grid(alpha=0.3) # type: ignore
+r2 = results['Random Forest']['R2'] # type: ignore
+ax.text(0.05, 0.92, f'R² = {r2}', transform=ax.transAxes, # type: ignore
+        fontsize=12, fontweight='bold',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+plt.tight_layout()
+plt.savefig('car_actual_vs_predicted.png', dpi=150, bbox_inches='tight') # type: ignore
+plt.close()
+print("✅ Saved: car_actual_vs_predicted.png")
+
+# ── 10. CHART 5 — Feature Importance ─────────────────────────
+importances = pd.Series(best_model.feature_importances_, index=X.columns).sort_values(ascending=True) # type: ignore
+fig, ax = plt.subplots(figsize=(9, 5)) # type: ignore
+colors = ['#C44E52' if v > importances.mean() else '#4C72B0'
+          for v in importances.values]
+importances.plot(kind='barh', ax=ax, color=colors, edgecolor='white')
+ax.set_title('🚗 Feature Importance (Random Forest)', # type: ignore
+             fontsize=13, fontweight='bold')
+ax.set_xlabel('Importance Score') # type: ignore
+for i, v in enumerate(importances.values):
+    ax.text(v + 0.002, i, f'{v:.3f}', va='center', fontsize=9) # type: ignore
+ax.axvline(importances.mean(), color='black', linestyle='--', # type: ignore
+           linewidth=1.2, label='Mean importance')
+ax.legend() # type: ignore
+ax.grid(axis='x', alpha=0.3) # type: ignore
+plt.tight_layout()
+plt.savefig('car_feature_importance.png', dpi=150, bbox_inches='tight') # type: ignore
+plt.close()
+print("✅ Saved: car_feature_importance.png")
