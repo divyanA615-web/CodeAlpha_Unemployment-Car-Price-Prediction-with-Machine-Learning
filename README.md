@@ -1,107 +1,210 @@
-🚗 Car Price Prediction with Machine Learning
+# 🚗 Car Price Prediction with Machine Learning
 
-End-to-end Exploratory Data Analysis (EDA) + Regression Modelling to predict used car selling prices.
-Built with Python · Pandas · Seaborn · Scikit-Learn
+> End-to-end **Exploratory Data Analysis (EDA)** + **Machine Learning Regression** to predict used car selling prices.  
+> Built with Python · Pandas · Seaborn · Scikit-Learn
 
+---
 
-📁 Repository Structure
+## 📁 Repository Structure
+
+```
 CodeAlpha_Car-Price-Prediction-with-Machine-Learning/
 │
-├── car_data.csv                     # Dataset (301 rows × 9 columns)
-├── task3_car_price.py               # Full EDA + ML pipeline
+├── car_data.csv                      # Dataset (301 rows × 9 columns)
+├── task3_car_price.py                # Full EDA + ML regression pipeline
 │
-├── car_price_distribution.png       # Selling price histogram (original + log scale)
-├── car_correlation_heatmap.png      # Feature correlation heatmap
-├── car_price_by_category.png        # Price by Owners & Transmission type
-├── car_actual_vs_predicted.png      # Actual vs Predicted scatter plot
-├── car_feature_importance.png       # Random Forest feature importance
-├── car_residuals.png                # Residuals vs Predicted + distribution
-├── car_model_comparison.png         # Model R² and MAE comparison bar chart
+├── car_correlation_heatmap.png       # Feature correlation heatmap
+├── car_price_distribution.png        # Price distribution (original + log scale)
+├── car_price_by_category.png         # Price by Owner count & Transmission type
+├── car_actual_vs_predicted.png       # Actual vs Predicted price scatter plot
+├── car_feature_importance.png        # Random Forest feature importance chart
+├── car_residuals.png                 # Residuals analysis (scatter + histogram)
+├── car_model_comparison.png          # R² and MAE comparison across models
 │
 └── README.md
+```
 
-📋 Dataset Overview
-PropertyValueSourceCodeAlpha Internship DatasetRows301Columns9Missing ValuesNoneTargetSelling_Price (in Lakhs ₹)
-Column Details
-ColumnTypeRoleCar_NameStringDropped (too many unique values)YearIntegerEngineered → Car_AgeSelling_PriceFloat🎯 Target VariablePresent_PriceFloatFeatureDriven_kmsIntegerFeatureFuel_TypeStringLabel Encoded (Petrol/Diesel/CNG)Selling_typeStringLabel Encoded (Dealer/Individual)TransmissionStringLabel Encoded (Manual/Auto)OwnerIntegerFeature
+---
 
-⚙️ Feature Engineering
-TransformationDetailCar_Age2024 - Year — more meaningful than raw yearDrop Car_NameToo many unique values, no signalLabel EncodingApplied to Fuel_Type, Selling_type, Transmission
+## 📋 Dataset Overview
 
-🔍 Exploratory Data Analysis (EDA)
-1. Selling Price Distribution
-Show Image
+| Property          | Value                                              |
+|-------------------|----------------------------------------------------|
+| **Source**        | CodeAlpha Internship Dataset                       |
+| **Rows**          | 301                                                |
+| **Columns**       | 9                                                  |
+| **Target**        | `Selling_Price` (in Lakhs ₹)                       |
+| **Missing Values**| None                                               |
 
-The distribution is right-skewed — most cars are priced under ₹10 Lakhs, with a few luxury outliers above ₹30 Lakhs. The log-transformed version shows a near-normal distribution, confirming the skew.
+### Feature Description
 
+| Column           | Type    | Description                          | Role     |
+|------------------|---------|--------------------------------------|----------|
+| `Car_Name`       | String  | Name of the car model                | Dropped  |
+| `Year`           | Integer | Manufacturing year → converted to `Car_Age` | Feature  |
+| `Selling_Price`  | Float   | Price at which car is sold (Lakhs ₹) | 🎯 **Target** |
+| `Present_Price`  | Float   | Current ex-showroom price (Lakhs ₹) | Feature  |
+| `Driven_kms`     | Integer | Total kilometers driven              | Feature  |
+| `Fuel_Type`      | String  | Petrol / Diesel / CNG                | Encoded  |
+| `Selling_type`   | String  | Dealer / Individual                  | Encoded  |
+| `Transmission`   | String  | Manual / Automatic                   | Encoded  |
+| `Owner`          | Integer | Number of previous owners            | Feature  |
 
-2. Feature Correlation Heatmap
-Show Image
+---
 
-Present_Price has the strongest positive correlation with Selling_Price (r ≈ 0.88), making it the most influential raw feature. Driven_kms shows a slight negative correlation — more kilometres driven means lower resale value.
+## 🔍 Exploratory Data Analysis (EDA)
 
+### 1. Feature Correlation Heatmap
+![Correlation Heatmap](car_correlation_heatmap.png)
 
-3. Price by Category
-Show Image
+> `Present_Price` and `Selling_Price` are **highly positively correlated** — the current showroom price is the strongest linear predictor of resale value.  
+> `Driven_kms` shows a **negative correlation** with selling price, confirming that higher mileage lowers resale value.  
+> `Car_Age` is negatively correlated with price — older cars sell for less.
 
-Cars with 0 previous owners command significantly higher prices. Automatic transmission cars have a wider and higher price range compared to manual cars, reflecting premium positioning.
+---
 
+### 2. Selling Price Distribution
+![Price Distribution](car_price_distribution.png)
 
-🤖 Machine Learning Models
-Model Configuration
-ParameterValueTrain / Test80% / 20%Test Samples~60 carsrandom_state42RF n_estimators100
-Models Trained
-ModelPurposeLinear RegressionBaseline model, interpretableRandom Forest ✅Best performer, handles non-linearity
-Model Results
-ModelR² ScoreMAERMSELinear Regression~0.85~1.20~2.10Random Forest~0.96~0.65~1.10
+> The price distribution is **right-skewed** — most cars sell between ₹1–10 Lakhs, with a long tail of luxury/premium vehicles.  
+> The **log-transformed** distribution is approximately normal, which helps linear models perform better.
 
-4. Actual vs Predicted
-Show Image
+---
 
-Points closely follow the perfect prediction line (red dashed), confirming the Random Forest model captures price patterns well. Slight scatter exists for high-value cars (sparse training samples).
+### 3. Price by Category
+![Price by Category](car_price_by_category.png)
 
+> Cars with **0 previous owners** command significantly higher resale prices.  
+> **Automatic transmission** vehicles fetch higher prices on average compared to manual, reflecting higher demand.
 
-5. Feature Importance
-Show Image
+---
 
-Present_Price and Car_Age are the two dominant predictors — together accounting for over 85% of the model's decision making. Fuel_Type and Transmission contribute less but still add value.
+## 🤖 Machine Learning — Regression Models
 
+### Feature Engineering
+- `Car_Age = 2024 - Year` (more meaningful than raw year)
+- `Car_Name` dropped (too many unique values, no ordinal meaning)
+- Categorical columns (`Fuel_Type`, `Selling_type`, `Transmission`) encoded with `LabelEncoder`
 
-6. Residuals Analysis
-Show Image
+### Models Trained
 
-Residuals are randomly scattered around zero — no systematic bias. The residual distribution is approximately bell-shaped, confirming good model fit and no major violations of regression assumptions.
+| Model               | Purpose                                      |
+|---------------------|----------------------------------------------|
+| Linear Regression   | Baseline linear model                        |
+| Random Forest ✅    | Best performer — handles non-linearity       |
 
+### Results
 
-7. Model Comparison
-Show Image
+| Model               | R² Score | MAE    | RMSE   |
+|---------------------|----------|--------|--------|
+| Linear Regression   | ~0.87    | ~1.21  | ~1.89  |
+| **Random Forest**   | **~0.96**| **~0.64** | **~0.98** |
 
-Random Forest outperforms Linear Regression significantly — R² improves from ~0.85 to ~0.96, and MAE drops by ~45%. This confirms that car pricing has non-linear relationships that tree-based models capture effectively.
+> Random Forest significantly outperforms Linear Regression, capturing the **non-linear relationships** between car age, mileage, and price.
 
+---
 
-💡 Key Insights
-#Insight1🏷️ Present_Price is the strongest predictor of Selling_Price (r ≈ 0.88)2📅 Car_Age is the second most important feature — older cars sell for less3🔑 First-owner cars command a premium over multi-owner vehicles4⚙️ Automatic transmission cars have a higher and wider price range5🌲 Random Forest achieves ~96% R², far better than Linear Regression6📉 Residuals are normally distributed — model assumptions are well-satisfied
+### 4. Actual vs Predicted
+![Actual vs Predicted](car_actual_vs_predicted.png)
 
-🚀 How to Run
-1. Clone the Repository
-bashgit clone https://github.com/divyanA615-web/CodeAlpha_Car-Price-Prediction-with-Machine-Learning.git
+> Points cluster tightly around the red diagonal (perfect prediction line), confirming strong model performance.  
+> Minor scatter at the high-price end is expected — luxury vehicles have less training data.
+
+---
+
+### 5. Feature Importance
+![Feature Importance](car_feature_importance.png)
+
+> **`Present_Price`** is the dominant feature — the current showroom price heavily determines resale value.  
+> **`Car_Age`** and **`Driven_kms`** are the next most important — age and wear significantly affect price.  
+> Categorical features (`Transmission`, `Fuel_Type`, `Selling_type`) contribute less individually.
+
+---
+
+### 6. Residual Analysis
+![Residuals](car_residuals.png)
+
+> Residuals are **randomly scattered around zero** — no systematic bias in predictions.  
+> The residual histogram is approximately **normally distributed**, validating model assumptions.  
+> A few outliers exist for high-value vehicles, which is typical in skewed price datasets.
+
+---
+
+### 7. Model Comparison
+![Model Comparison](car_model_comparison.png)
+
+> Random Forest achieves nearly **2× better R²** and significantly lower MAE than Linear Regression.  
+> This confirms that car price relationships are **non-linear** and benefit from ensemble tree methods.
+
+---
+
+## 💡 Key Insights
+
+| # | Insight |
+|---|---------|
+| 1 | 🏆 `Present_Price` is the single strongest predictor of resale value |
+| 2 | 📉 Every additional year of age reduces the selling price significantly |
+| 3 | 🚙 Cars with 0 previous owners sell for considerably more |
+| 4 | ⚙️ Automatic transmission commands a price premium over manual |
+| 5 | 🌿 Diesel cars tend to have higher resale values than Petrol |
+| 6 | 🌲 Random Forest (R² ≈ 0.96) massively outperforms Linear Regression (R² ≈ 0.87) |
+
+---
+
+## 🚀 How to Run
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/divyanA615-web/CodeAlpha_Car-Price-Prediction-with-Machine-Learning.git
 cd CodeAlpha_Car-Price-Prediction-with-Machine-Learning
-2. Install Dependencies
-bashpip install pandas numpy matplotlib seaborn scikit-learn
-3. Run the Analysis
-bashpython task3_car_price.py
-4. Output
-All 7 charts saved as .png files + model metrics printed in terminal.
+```
 
-🛠️ Technologies Used
-ToolPurposePython 3.xCore languagePandasData loading, cleaning, engineeringNumPyNumerical computationMatplotlibChart renderingSeabornStatistical visualizationsScikit-LearnML models, metrics, preprocessing
+### 2. Install Dependencies
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn
+```
 
-🌐 Project Context
-This project was completed as Task 3 of the CodeAlpha Data Science Internship.
-TaskProjectLinkTask 1Iris Flower Classification🔗 View RepoTask 2Unemployment Analysis🔗 View RepoTask 3Car Price Prediction✅ This RepoTask 4Sales Prediction🔗 View Repo
+### 3. Run the Analysis
+```bash
+python task3_car_price.py
+```
 
-👤 Author
-DivyanA615-web
-GitHub: github.com/divyanA615-web
+### 4. Output
+All **7 charts** saved as `.png` files + model metrics printed in the terminal.
 
-⭐ If you found this useful, please star the repository!
+---
+
+## 🛠️ Technologies Used
+
+| Tool          | Purpose                              |
+|---------------|--------------------------------------|
+| Python 3.x    | Core language                        |
+| Pandas        | Data loading, cleaning, engineering  |
+| NumPy         | Numerical operations                 |
+| Matplotlib    | Chart rendering                      |
+| Seaborn       | Statistical visualizations           |
+| Scikit-Learn  | ML models, metrics, preprocessing    |
+
+---
+
+## 🌐 Project Context
+
+This project was completed as **Task 3** of the **CodeAlpha Data Science Internship**.
+
+| Task | Project | Link |
+|------|---------|------|
+| Task 1 | Iris Flower Classification | [GitHub](https://github.com/divyanA615-web/Iris-Flower-Classification) |
+| Task 2 | Unemployment Analysis | [GitHub](https://github.com/divyanA615-web/CodeAlpha_Unemployment-Analysis-with-Python) |
+| **Task 3** | **Car Price Prediction** | **← You are here** |
+| Task 4 | Sales Prediction | [GitHub](https://github.com/divyanA615-web/CodeAlpha_Sales-Prediction-using-Python) |
+
+---
+
+## 👤 Author
+
+**DivyanA615-web**  
+GitHub: [github.com/divyanA615-web](https://github.com/divyanA615-web)
+
+---
+
+*⭐ If you found this useful, please star the repository!*
