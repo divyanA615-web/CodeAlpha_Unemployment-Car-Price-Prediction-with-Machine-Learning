@@ -16,3 +16,11 @@ from sklearn.ensemble import RandomForestRegressor # type: ignore
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score # type: ignore
 import warnings
 warnings.filterwarnings('ignore')
+
+plt.rcParams['figure.figsize'] = (10, 6)
+sns.set_style("whitegrid")
+ 
+print("=" * 60)
+print("   TASK 3 — CAR SELLING PRICE PREDICTION")
+print("=" * 60)
+
