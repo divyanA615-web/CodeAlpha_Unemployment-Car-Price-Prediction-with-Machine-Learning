@@ -160,3 +160,54 @@ plt.tight_layout()
 plt.savefig('car_feature_importance.png', dpi=150, bbox_inches='tight') # type: ignore
 plt.close()
 print("✅ Saved: car_feature_importance.png")
+
+# ── 11. CHART 6 — Residuals Plot ─────────────────────────────
+residuals = y_test - best_pred # type: ignore
+fig, axes = plt.subplots(1, 2, figsize=(13, 5)) # type: ignore
+fig.suptitle('🚗 Residual Analysis', fontsize=14, fontweight='bold') # type: ignore
+axes[0].scatter(best_pred, residuals, alpha=0.6, color='#2ecc71',
+                edgecolors='white', linewidth=0.5)
+axes[0].axhline(0, color='red', linestyle='--', linewidth=1.5)
+axes[0].set_title('Residuals vs Predicted')
+axes[0].set_xlabel('Predicted Price')
+axes[0].set_ylabel('Residuals')
+axes[0].grid(alpha=0.3)
+axes[1].hist(residuals, bins=25, color='#9b59b6',
+             edgecolor='white', alpha=0.85)
+axes[1].axvline(0, color='red', linestyle='--', linewidth=1.5)
+axes[1].set_title('Residuals Distribution')
+axes[1].set_xlabel('Residual Value')
+axes[1].grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig('car_residuals.png', dpi=150, bbox_inches='tight') # type: ignore
+plt.close()
+print("✅ Saved: car_residuals.png")
+
+# ── 12. MODEL COMPARISON BAR CHART ───────────────────────────
+names  = list(results.keys()) # type: ignore
+r2vals = [results[n]['R2']  for n in names] # type: ignore
+mavals = [results[n]['MAE'] for n in names] # type: ignore
+fig, axes = plt.subplots(1, 2, figsize=(11, 5)) # type: ignore
+fig.suptitle('🚗 Model Comparison', fontsize=14, fontweight='bold') # type: ignore
+bars1 = axes[0].bar(names, r2vals, color=['#3498db', '#e74c3c'],
+                    edgecolor='white', width=0.5)
+axes[0].set_title('R² Score (higher = better)')
+axes[0].set_ylim(0, 1.1)
+axes[0].grid(axis='y', alpha=0.3)
+for bar, v in zip(bars1, r2vals): # type: ignore
+    axes[0].text(bar.get_x() + bar.get_width()/2,
+                 bar.get_height() + 0.02, f'{v:.3f}',
+                 ha='center', fontweight='bold')
+bars2 = axes[1].bar(names, mavals, color=['#3498db', '#e74c3c'],
+                    edgecolor='white', width=0.5)
+axes[1].set_title('MAE — Mean Abs Error (lower = better)')
+axes[1].grid(axis='y', alpha=0.3)
+for bar, v in zip(bars2, mavals): # type: ignore
+    axes[1].text(bar.get_x() + bar.get_width()/2,
+                 bar.get_height() + 0.01, f'{v:.3f}',
+                 ha='center', fontweight='bold')
+plt.tight_layout()
+plt.savefig('car_model_comparison.png', dpi=150, bbox_inches='tight') # type: ignore
+plt.close()
+print("✅ Saved: car_model_comparison.png")
+print("\n✅ TASK 3 COMPLETE — 7 charts + 2 ML models done!")
